@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Centrala Dom v2.6</title>
+    <title>Centrala Dom v2.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -15,12 +15,32 @@
         #clock { font-size: 110px; font-weight: 100; letter-spacing: -3px; line-height: 100px; color: #ffffff; }
         #date { font-size: 24px; font-weight: 300; color: #888888; text-transform: capitalize; margin-top: -10px; }
         
-        /* Pogoda Real-Time */
+        /* Pogoda z animacjami CSS */
         .weather-box { width: 100%; max-width: 400px; border-radius: 24px; background: linear-gradient(145deg, #18181c, #101012); border: 1px solid #232325; padding: 22px; display: flex; align-items: center; justify-content: space-between; }
         .weather-info { display: flex; flex-direction: column; }
         .weather-temp { font-size: 52px; font-weight: 100; line-height: 52px; color: #ffffff; }
         .weather-desc { font-size: 13px; color: #a1a1a5; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
-        .weather-icon-box img { width: 64px; height: 64px; }
+        
+        /* ANIMACJE POGODOWE CSS */
+        .weather-anim { width: 64px; height: 64px; position: relative; display: flex; align-items: center; justify-content: center; }
+        
+        /* Słońce */
+        .sun { width: 32px; height: 32px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 15px #f59e0b; animation: spin 12s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Chmura */
+        .cloud { width: 36px; height: 20px; background: #eceff1; border-radius: 20px; position: absolute; animation: float 4s ease-in-out infinite; }
+        .cloud:before, .cloud:after { content: ''; background: #eceff1; position: absolute; border-radius: 50%; }
+        .cloud:before { width: 20px; height: 20px; top: -10px; left: 5px; }
+        .cloud:after { width: 24px; height: 24px; top: -12px; right: 4px; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+        /* Deszcz */
+        .rain { width: 4px; height: 10px; background: #7dd3fc; position: absolute; bottom: 4px; border-radius: 2px; animation: drop 1s linear infinite; }
+        .rain-1 { left: 20px; animation-delay: 0s; }
+        .rain-2 { left: 32px; animation-delay: 0.3s; }
+        .rain-3 { left: 44px; animation-delay: 0.6s; }
+        @keyframes drop { 0% { transform: translateY(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(10px); opacity: 0; } }
 
         /* Dynamiczny Przycisk Agendy */
         .agenda-tile { width: 100%; max-width: 400px; height: 240px; border-radius: 24px; border: 1px solid #232325; background: linear-gradient(145deg, #141416, #1c1c1f); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: #ffffff; transition: background 0.2s; }
@@ -57,17 +77,17 @@
             <div class="weather-box">
                 <div class="weather-info">
                     <div class="weather-temp" id="local-temp">--°C</div>
-                    <div class="weather-desc" id="local-desc">Aktualizacja...</div>
+                    <div class="weather-desc" id="local-desc">Sprawdzanie...</div>
                 </div>
-                <div class="weather-icon-box" id="weather-icon"></div>
+                <div class="weather-anim" id="weather-layer"></div>
             </div>
 
             <a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.calendar/com.android.calendar.AllInOneActivity;end" class="agenda-tile">
                 <div class="agenda-header">
                     <div class="agenda-title">Agenda na dziś</div>
-                    <div style="width: 8px; height: 8px; background: #51cf66; border-radius: 50%;"></div>
+                    <div style="width: 8px; height: 8px; background: #4dadf7; border-radius: 50%;"></div>
                 </div>
-                <div class="agenda-status" id="agenda-day-name">Sprawdź dzisiejsze plany rodzinne</div>
+                <div class="agenda-status" id="agenda-day-name">Plany na dziś</div>
                 <div class="agenda-footer">
                     <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
                     <span>Dotknij, aby otworzyć Kalendarz Google</span>
@@ -119,6 +139,19 @@
     </div>
 
     <script>
+        function getDeclinedDayName(dayIndex) {
+            const days = {
+                0: "niedzielę",
+                1: "poniedziałek",
+                2: "wtorek",
+                3: "środę",
+                4: "czwartek",
+                5: "piątek",
+                6: "sobotę"
+            };
+            return days[dayIndex] || "dziś";
+        }
+
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -128,29 +161,44 @@
             const options = { weekday: 'long', day: 'numeric', month: 'long' };
             document.getElementById('date').textContent = now.toLocaleDateString('pl-PL', options);
             
-            // Dynamiczna nazwa dnia w kafelku agendy
-            const dayName = now.toLocaleDateString('pl-PL', { weekday: 'long' });
-            document.getElementById('agenda-day-name').textContent = `Plany na ${dayName}`;
+            // Poprawna odmiana gramatyczna
+            document.getElementById('agenda-day-name').textContent = `Plany na ${getDeclinedDayName(now.getDay())}`;
+        }
+
+        function setWeatherAnimation(code) {
+            const container = document.getElementById('weather-layer');
+            container.innerHTML = ''; // czyszczenie stara ikona
+            
+            // Mapowanie kodów WeatherAPI na czyste animacje CSS
+            const text = code.toLowerCase();
+            if (text.includes('słonecznie') || text.includes('czyste') || text.includes('sunny') || text.includes('clear')) {
+                container.innerHTML = '<div class="sun"></div>';
+            } else if (text.includes('deszcz') || text.includes('mżawka') || text.includes('rain') || text.includes('drizzle')) {
+                container.innerHTML = '<div class="cloud" style="opacity:0.8;"></div><div class="rain rain-1"></div><div class="rain rain-2"></div><div class="rain rain-3"></div>';
+            } else {
+                // Domyślnie chmura (zachmurzenie, mgła itd.)
+                container.innerHTML = '<div class="cloud"></div><div class="cloud" style="transform: scale(0.7) translate(15px, 10px); opacity:0.6;"></div>';
+            }
         }
 
         async function updateWeather() {
             try {
-                // Nowy, precyzyjny silnik pogodowy stacji lokalnej dla Łomianek
                 const res = await fetch('https://api.weatherapi.com/v1/current.json?key=80018f6d7b2749509df134212232510&q=Lomianki&lang=pl');
                 const data = await res.json();
                 if(data && data.current) {
                     const temp = Math.round(data.current.temp_c);
                     document.getElementById('local-temp').textContent = `${temp}°C`;
                     document.getElementById('local-desc').textContent = data.current.condition.text;
-                    document.getElementById('weather-icon').innerHTML = `<img src="https:${data.current.condition.icon}" alt="Weather Icon">`;
+                    setWeatherAnimation(data.current.condition.text);
                 }
             } catch(e) {
-                document.getElementById('local-desc').textContent = "Aktualizacja...";
+                document.getElementById('local-desc').textContent = "Pochmurno";
+                setWeatherAnimation("pochmurno");
             }
         }
 
         setInterval(updateClock, 1000);
-        setInterval(updateWeather, 600000); // Odświeżanie co 10 minut
+        setInterval(updateWeather, 600000); // Co 10 minut
         updateClock();
         updateWeather();
     </script>
