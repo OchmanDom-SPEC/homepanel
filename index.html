@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Centrala Dom v3.2</title>
+    <title>Centrala Dom v4.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -15,35 +15,12 @@
         #clock { font-size: 110px; font-weight: 100; letter-spacing: -3px; line-height: 100px; color: #ffffff; }
         #date { font-size: 24px; font-weight: 300; color: #888888; text-transform: capitalize; margin-top: -10px; }
         
-        /* Pogoda Premium Box */
-        .weather-box { width: 100%; max-width: 400px; border-radius: 24px; background: linear-gradient(145deg, #18181c, #101012); border: 1px solid #232325; padding: 22px; display: flex; align-items: center; justify-content: space-between; }
-        .weather-info { display: flex; flex-direction: column; }
-        .weather-temp { font-size: 52px; font-weight: 100; line-height: 52px; color: #ffffff; }
-        .weather-desc { font-size: 13px; color: #a1a1a5; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
-        
-        /* DEDYKOWANE ANIMACJE POGODOWE CSS */
-        .weather-anim { width: 64px; height: 64px; position: relative; display: flex; align-items: center; justify-content: center; }
-        
-        /* Stan: Słońce */
-        .sun { width: 32px; height: 32px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 15px #f59e0b; animation: spin 12s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        /* Pogoda Premium Apple-Style (Yr.no) */
+        .weather-box { width: 100%; max-width: 400px; height: 115px; border-radius: 24px; background: linear-gradient(145deg, #18181c, #101012); border: 1px solid #232325; overflow: hidden; position: relative; }
+        .weather-box iframe { width: 100%; height: 150px; border: none; margin-top: -25px; filter: invert(1) hue-rotate(180deg) brightness(1.2); }
 
-        /* Stan: Chmura */
-        .cloud { width: 36px; height: 20px; background: #eceff1; border-radius: 20px; position: absolute; animation: float 4s ease-in-out infinite; }
-        .cloud:before, .cloud:after { content: ''; background: #eceff1; position: absolute; border-radius: 50%; }
-        .cloud:before { width: 20px; height: 20px; top: -10px; left: 5px; }
-        .cloud:after { width: 24px; height: 24px; top: -12px; right: 4px; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-
-        /* Stan: Deszcz */
-        .rain { width: 4px; height: 10px; background: #7dd3fc; position: absolute; bottom: 4px; border-radius: 2px; animation: drop 1s linear infinite; }
-        .rain-1 { left: 15px; animation-delay: 0s; }
-        .rain-2 { left: 27px; animation-delay: 0.3s; }
-        .rain-3 { left: 39px; animation-delay: 0.6s; }
-        @keyframes drop { 0% { transform: translateY(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(10px); opacity: 0; } }
-
-        /* Przycisk Agendy */
-        .agenda-tile { width: 100%; max-width: 400px; height: 240px; border-radius: 24px; border: 1px solid #232325; background: linear-gradient(145deg, #141416, #1c1c1f); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: #ffffff; }
+        /* Dynamiczny Przycisk Agendy */
+        .agenda-tile { width: 100%; max-width: 400px; height: 240px; border-radius: 24px; border: 1px solid #232325; background: linear-gradient(145deg, #141416, #1c1c1f); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: #ffffff; transition: background 0.2s; }
         .agenda-tile:active { background: #232325; border-color: #4dadf7; }
         .agenda-header { display: flex; align-items: center; justify-content: space-between; }
         .agenda-title { font-size: 14px; font-weight: 600; color: #4dadf7; text-transform: uppercase; letter-spacing: 2px; }
@@ -75,11 +52,7 @@
             <div id="date">Ładowanie...</div>
             
             <div class="weather-box">
-                <div class="weather-info">
-                    <div class="weather-temp" id="local-temp">--°C</div>
-                    <div class="weather-desc" id="local-desc">Aktualizacja...</div>
-                </div>
-                <div class="weather-anim" id="weather-layer"></div>
+                <iframe src="https://www.yr.no/en/content/2-766782/card.html?mode=dark" scrolling="no"></iframe>
             </div>
 
             <a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.calendar/com.android.calendar.AllInOneActivity;end" class="agenda-tile">
@@ -155,47 +128,8 @@
             document.getElementById('agenda-day-name').textContent = `Plany na ${getDeclinedDayName(now.getDay())}`;
         }
 
-        // Funkcja zwrotna (Callback) dla bezpiecznego JSONP - przetwarza dane pogodowe
-        function handleWeatherResponse(data) {
-            if (data && data.current) {
-                const temp = Math.round(data.current.temp_c);
-                const desc = data.current.condition.text;
-                
-                document.getElementById('local-temp').textContent = `${temp}°C`;
-                document.getElementById('local-desc').textContent = desc;
-                
-                const container = document.getElementById('weather-layer');
-                const text = desc.toLowerCase();
-                
-                // Przypisanie dedykowanej animacji dokładnie pod warunki atmosferyczne
-                if (text.includes('deszcz') || text.includes('mżawk') || text.includes('opad') || text.includes('rain') || text.includes('drizzle')) {
-                    container.innerHTML = '<div class="cloud" style="opacity:0.7; background:#90a4ae;"></div><div class="rain rain-1"></div><div class="rain rain-2"></div><div class="rain rain-3"></div>';
-                } else if (text.includes('słonecz') || text.includes('czyst') || text.includes('sunny') || text.includes('clear')) {
-                    container.innerHTML = '<div class="sun"></div>';
-                } else {
-                    // Domyślnie: Zachmurzenie (Chmury bez słońca/deszczu)
-                    container.innerHTML = '<div class="cloud"></div><div class="cloud" style="transform: scale(0.7) translate(15px, 10px); opacity:0.6;"></div>';
-                }
-            }
-        }
-
-        // Dynamiczne ładowanie skryptu pogodowego (Całkowicie mija blokady CORS)
-        function fetchWeatherJSONP() {
-            const oldScript = document.getElementById('weather-script');
-            if (oldScript) oldScript.remove();
-
-            const script = document.createElement('script');
-            script.id = 'weather-script';
-            // Wykorzystujemy parametr callback=handleWeatherResponse wymagany przez JSONP
-            script.src = 'https://api.weatherapi.com/v1/current.json?key=80018f6d7b2749509df134212232510&q=Lomianki&lang=pl&callback=handleWeatherResponse&_ts=' + new Date().getTime();
-            document.body.appendChild(script);
-        }
-
         setInterval(updateClock, 1000);
-        setInterval(fetchWeatherJSONP, 600000); // Odświeżanie co 10 minut
-        
         updateClock();
-        fetchWeatherJSONP();
     </script>
 </body>
 </html>
