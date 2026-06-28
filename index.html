@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Centrala Dom v5.2</title>
+    <title>Centrala Dom v5.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -58,11 +58,16 @@
         .agenda-footer svg { width: 14px; height: 14px; fill: #4dadf7; }
 
         .grid-panel { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, 1fr); gap: 16px; height: 100%; }
-        .tile { background: #141416; border: 1px solid #232325; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; transition: background 0.2s; height: 100%; cursor: pointer; }
+        .tile { background: #141416; border: 1px solid #232325; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; transition: background 0.2s, border-color 0.2s; height: 100%; cursor: pointer; }
         .tile:active { background: #232325; }
-        .tile-title { font-size: 13px; font-weight: 400; color: #a1a1a5; margin-top: 12px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px; }
-        .tile svg { width: 36px; height: 36px; fill: #ffffff; opacity: 0.9; }
+        .tile-title { font-size: 13px; font-weight: 400; color: #a1a1a5; margin-top: 12px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px; transition: color 0.2s; }
+        .tile svg { width: 36px; height: 36px; fill: #ffffff; opacity: 0.9; transition: fill 0.2s, filter 0.2s; }
         
+        /* NOWOŚĆ: Efekt podświetlenia włączonej lampy */
+        .tile.lampa-on { border-color: #f59e0b; background: #1c140a; }
+        .tile.lampa-on svg { fill: #f59e0b; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6)); opacity: 1; }
+        .tile.lampa-on .tile-title { color: #f59e0b; font-weight: 600; }
+
         .tile.alarm { border: 1px solid #3a1616; background: #1a1010; }
         .tile.alarm .tile-title { color: #ff6b6b; }
         .tile.alarm svg { fill: #ff6b6b; }
@@ -113,7 +118,7 @@
                 <div class="tile-title">Ekspres</div>
             </a>
 
-            <a href="javascript:void(0)" onclick="toggleLampa()" class="tile">
+            <a href="javascript:void(0)" id="tile-lampa" onclick="toggleLampa()" class="tile">
                 <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.22 11.12l-.22.14V16h-4v-2.74l-.22-.14C8.67 12.32 8 10.74 8 9c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.74-.67 3.32-1.78 4.12z"/></svg>
                 <div class="tile-title">Lampa Sofa</div>
             </a>
@@ -154,30 +159,47 @@
             }
         }
 
-        // --- OBSŁUGA LAMPY SMARTTHINGS --- //
+        // KONFIGURACJA URZĄDZENIA
+        const ST_TOKEN = 'daaa20e1-b37b-4f3c-bb0a-806bebac73d1'; 
+        const ST_DEVICE_ID = '3caa4abb-2326-4ebf-abde-5c723f652836';
+
+        // Modyfikacja: Funkcja sprawdzająca status lampy w tle
+        async function updateLampaStatus() {
+            try {
+                const res = await fetch(`https://api.smartthings.com/v1/devices/${ST_DEVICE_ID}/components/main/capabilities/switch/status`, {
+                    headers: { 'Authorization': `Bearer ${ST_TOKEN}` }
+                });
+                if (!res.ok) return;
+                
+                const data = await res.json();
+                const currentState = data.switch.value; // 'on' lub 'off'
+                
+                const tile = document.getElementById('tile-lampa');
+                if (currentState === 'on') {
+                    tile.classList.add('lampa-on');
+                } else {
+                    tile.classList.remove('lampa-on');
+                }
+            } catch (e) {
+                console.error("Błąd pobierania stanu lampy:", e);
+            }
+        }
+
+        // Modyfikacja: Przełączanie z natychmiastową reakcją wizualną (UI)
         async function toggleLampa() {
-            const token = 'daaa20e1-b37b-4f3c-bb0a-806bebac73d1'; 
-            const deviceId = '3caa4abb-2326-4ebf-abde-5c723f652836';
+            const tile = document.getElementById('tile-lampa');
+            const isCurrentlyOn = tile.classList.contains('lampa-on');
+            const nextState = isCurrentlyOn ? 'off' : 'on';
+
+            // Zmiana wyglądu od razu (UI reaguje bez czekania na serwer)
+            if (nextState === 'on') tile.classList.add('lampa-on');
+            else tile.classList.remove('lampa-on');
 
             try {
-                // 1. Sprawdzamy aktualny stan lampy
-                const statusRes = await fetch(`https://api.smartthings.com/v1/devices/${deviceId}/components/main/capabilities/switch/status`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (!statusRes.ok) throw new Error(`Błąd HTTP: ${statusRes.status}`);
-                
-                const statusData = await statusRes.json();
-                const currentState = statusData.switch.value; // 'on' lub 'off'
-                
-                // Ustawiamy komendę przeciwną
-                const nextState = currentState === 'on' ? 'off' : 'on';
-
-                // 2. Wysyłamy komendę zmiany stanu
-                await fetch(`https://api.smartthings.com/v1/devices/${deviceId}/commands`, {
+                const res = await fetch(`https://api.smartthings.com/v1/devices/${ST_DEVICE_ID}/commands`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `Bearer ${ST_TOKEN}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
@@ -189,9 +211,15 @@
                     })
                 });
 
+                if (!res.ok) throw new Error("Błąd zapisu komendy");
+                
+                // Dla pewności potwierdzamy stan z serwera za sekundę
+                setTimeout(updateLampaStatus, 1000);
+
             } catch (e) {
-                console.error("Błąd API SmartThings:", e);
-                alert("Nie udało się przełączyć lampy. Sprawdź czy tablet ma internet lub czy w Fully Kiosk nie blokuje Cię polityka CORS.");
+                console.error("Błąd API SmartThings podczas przełączania:", e);
+                // W razie błędu przywracamy faktyczny stan z sieci
+                updateLampaStatus();
             }
         }
 
@@ -256,23 +284,29 @@
             }
         }
 
+        // INTERWAŁY I INICJALIZACJA
         setInterval(updateClock, 1000);
         setInterval(updateWeather, 600000);
+        setInterval(updateLampaStatus, 5000); // Automatyczne sprawdzanie stanu lampy co 5 sekund
         
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") {
                 updateClock();
                 updateWeather();
+                updateLampaStatus();
             }
         });
 
         document.addEventListener("touchstart", () => {
             updateClock();
             updateWeather(); 
+            updateLampaStatus();
         }, { passive: true });
         
+        // Pierwsze uruchomienie przy starcie strony
         updateClock();
         updateWeather();
+        updateLampaStatus();
     </script>
 </body>
 </html>
