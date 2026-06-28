@@ -154,19 +154,13 @@
             }
         }
 
-        // --- ZMIANA DLA LAMPY: Bezpośrednie połączenie z API SmartThings --- //
+        // --- OBSŁUGA LAMPY SMARTTHINGS --- //
         async function toggleLampa() {
-            // TUTAJ PODAJ SWOJE DANE ZE SMARTTHINGS:
-            const token = 'TWÓJ_TOKEN_API_SMARTTHINGS'; 
-            const deviceId = 'ID_TWOJEGO_URZĄDZENIA';
-
-            if (token === 'TWÓJ_TOKEN_API_SMARTTHINGS') {
-                alert("Musisz wkleić swój Token API oraz Device ID dla SmartThings w kodzie pliku!");
-                return;
-            }
+            const token = 'daaa20e1-b37b-4f3c-bb0a-806bebac73d1'; 
+            const deviceId = '3caa4abb-2326-4ebf-abde-5c723f652836';
 
             try {
-                // 1. Sprawdzamy, czy lampa jest teraz włączona czy wyłączona
+                // 1. Sprawdzamy aktualny stan lampy
                 const statusRes = await fetch(`https://api.smartthings.com/v1/devices/${deviceId}/components/main/capabilities/switch/status`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -174,12 +168,12 @@
                 if (!statusRes.ok) throw new Error(`Błąd HTTP: ${statusRes.status}`);
                 
                 const statusData = await statusRes.json();
-                const currentState = statusData.switch.value; // zwróci 'on' lub 'off'
+                const currentState = statusData.switch.value; // 'on' lub 'off'
                 
-                // Ustawiamy komendę na odwrotną do obecnego stanu
+                // Ustawiamy komendę przeciwną
                 const nextState = currentState === 'on' ? 'off' : 'on';
 
-                // 2. Wysyłamy komendę zmieniającą stan
+                // 2. Wysyłamy komendę zmiany stanu
                 await fetch(`https://api.smartthings.com/v1/devices/${deviceId}/commands`, {
                     method: 'POST',
                     headers: {
@@ -197,7 +191,7 @@
 
             } catch (e) {
                 console.error("Błąd API SmartThings:", e);
-                alert("Nie udało się przełączyć lampy (sprawdź token, ID lub blokadę CORS).");
+                alert("Nie udało się przełączyć lampy. Sprawdź czy tablet ma internet lub czy w Fully Kiosk nie blokuje Cię polityka CORS.");
             }
         }
 
