@@ -10,77 +10,50 @@
         body { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; overflow: hidden; padding: 40px; height: 100vh; }
         
         .container { display: grid; grid-template-columns: 380px 1fr; gap: 24px; height: calc(100vh - 80px); }
-        
         .info-panel { display: flex; flex-direction: column; justify-content: center; gap: 24px; height: 100%; }
-        
         .clock-section { text-align: center; margin-bottom: 10px; }
         #clock { font-size: 110px; font-weight: 100; letter-spacing: -3px; line-height: 100px; color: #ffffff; }
         #date { font-size: 24px; font-weight: 300; color: #888888; text-transform: capitalize; margin-top: 5px; }
         
-        .weather-box { width: 100%; height: 110px; border-radius: 24px; background: linear-gradient(145deg, #18181c, #101012); border: 1px solid #232325; padding: 22px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #ffffff; transition: background 0.2s, border-color 0.2s; cursor: pointer; }
+        .weather-box { width: 100%; height: 110px; border-radius: 24px; background: linear-gradient(145deg, #18181c, #101012); border: 1px solid #232325; padding: 22px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #ffffff; transition: background 0.2s; cursor: pointer; }
         .weather-box:active { background: #232325; border-color: #4dadf7; }
         .weather-info { display: flex; flex-direction: column; }
         .weather-temp { font-size: 52px; font-weight: 100; line-height: 52px; color: #ffffff; }
         .weather-desc { font-size: 13px; color: #a1a1a5; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
-        
         .weather-anim { width: 64px; height: 64px; position: relative; display: flex; align-items: center; justify-content: center; }
         
         .sun { width: 32px; height: 32px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 15px #f59e0b; animation: spin 12s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
         .cloud { width: 36px; height: 20px; background: #eceff1; border-radius: 20px; position: absolute; animation: float 4s ease-in-out infinite; }
         .cloud:before, .cloud:after { content: ''; background: inherit; position: absolute; border-radius: 50%; }
         .cloud:before { width: 20px; height: 20px; top: -10px; left: 5px; }
         .cloud:after { width: 24px; height: 24px; top: -12px; right: 4px; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-
         .rain { width: 3px; height: 10px; background: #7dd3fc; position: absolute; bottom: 0; border-radius: 2px; animation: drop 1s linear infinite; }
         .rain-1 { left: 15px; animation-delay: 0s; }
         .rain-2 { left: 27px; animation-delay: 0.3s; }
         .rain-3 { left: 39px; animation-delay: 0.6s; }
         @keyframes drop { 0% { transform: translateY(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(15px); opacity: 0; } }
 
-        .snow { width: 5px; height: 5px; background: #ffffff; position: absolute; bottom: 0; border-radius: 50%; animation: snow-drop 2s linear infinite; }
-        .snow-1 { left: 15px; animation-delay: 0s; }
-        .snow-2 { left: 27px; animation-delay: 0.7s; }
-        .snow-3 { left: 39px; animation-delay: 1.4s; }
-        @keyframes snow-drop { 0% { transform: translateY(-10px) translateX(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(15px) translateX(5px); opacity: 0; } }
-
-        .lightning { position: absolute; width: 12px; height: 22px; background: #fde047; clip-path: polygon(100% 0, 0 50%, 40% 50%, 0 100%, 100% 40%, 60% 40%); top: 10px; left: 26px; animation: flash 3s infinite; }
-        @keyframes flash { 0%, 90%, 95%, 100% { opacity: 0; } 92%, 97% { opacity: 1; } }
-
         .agenda-tile { width: 100%; height: 220px; border-radius: 24px; border: 1px solid #232325; background: linear-gradient(145deg, #141416, #1c1c1f); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: #ffffff; }
         .agenda-tile:active { background: #232325; border-color: #4dadf7; }
-        .agenda-header { display: flex; align-items: center; justify-content: space-between; }
         .agenda-title { font-size: 14px; font-weight: 600; color: #4dadf7; text-transform: uppercase; letter-spacing: 2px; }
-        .agenda-status { font-size: 28px; font-weight: 100; color: #ffffff; line-height: 36px; margin-top: 15px; }
-        .agenda-footer { font-size: 12px; color: #a1a1a5; display: flex; align-items: center; gap: 8px; }
-        .agenda-footer svg { width: 14px; height: 14px; fill: #4dadf7; }
-
+        .agenda-status { font-size: 28px; font-weight: 100; color: #ffffff; margin-top: 15px; }
+        
         .grid-panel { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, 1fr); gap: 16px; height: 100%; }
-        .tile { background: #141416; border: 1px solid #232325; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; transition: background 0.2s; height: 100%; cursor: pointer; }
+        .tile { background: #141416; border: 1px solid #232325; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #ffffff; transition: background 0.2s; height: 100%; cursor: pointer; }
         .tile:active { background: #232325; }
-        .tile-title { font-size: 13px; font-weight: 400; color: #a1a1a5; margin-top: 12px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px; }
+        .tile-title { font-size: 13px; color: #a1a1a5; margin-top: 12px; text-transform: uppercase; }
         .tile svg { width: 36px; height: 36px; fill: #ffffff; opacity: 0.9; }
-        
-        .tile.alarm { border: 1px solid #3a1616; background: #1a1010; }
-        .tile.alarm .tile-title { color: #ff6b6b; }
-        .tile.alarm svg { fill: #ff6b6b; }
-        
-        .tile.eco { border: 1px solid #1e3a1e; background: #101c10; }
-        .tile.eco .tile-title { color: #51cf66; }
-        .tile.eco svg { fill: #51cf66; }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="info-panel">
             <div class="clock-section">
                 <div id="clock">00:00</div>
                 <div id="date">Ładowanie...</div>
             </div>
-            
             <a href="javascript:void(0)" onclick="openApp('mobi.mtech.weather.tod')" class="weather-box">
                 <div class="weather-info">
                     <div class="weather-temp" id="local-temp">--°C</div>
@@ -88,114 +61,53 @@
                 </div>
                 <div class="weather-anim" id="weather-layer"></div>
             </a>
-
             <a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.calendar/com.android.calendar.AllInOneActivity;end" class="agenda-tile">
-                <div class="agenda-header">
-                    <div class="agenda-title">Agenda na dziś</div>
-                    <div style="width: 8px; height: 8px; background: #4dadf7; border-radius: 50%;"></div>
-                </div>
-                <div class="agenda-status" id="agenda-day-name">Twoje zadania na dziś</div>
-                <div class="agenda-footer">
-                    <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
-                    <span>Dotknij, aby otworzyć Kalendarz</span>
-                </div>
+                <div class="agenda-title">Agenda na dziś</div>
+                <div class="agenda-status" id="agenda-day-name">Plany na dziś</div>
             </a>
         </div>
-
         <div class="grid-panel">
-            <a href="javascript:void(0)" onclick="openApp('com.xiaomi.smarthome')" class="tile">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <div class="tile-title">Xiaomi Home</div>
-            </a>
-
-            <a href="javascript:void(0)" onclick="openApp('com.bshg.homeconnect.android')" class="tile">
-                <svg viewBox="0 0 24 24"><path d="M2 21h18v-2H2v2zM20 8h-2V5h2v3zm2-5H2v11c0 2.21 1.79 4 4 4h10c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 11c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V5h14v9z"/></svg>
-                <div class="tile-title">Ekspres</div>
-            </a>
-
-            <a href="javascript:void(0)" onclick="openApp('com.coolkit')" class="tile">
-                <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.22 11.12l-.22.14V16h-4v-2.74l-.22-.14C8.67 12.32 8 10.74 8 9c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.74-.67 3.32-1.78 4.12z"/></svg>
-                <div class="tile-title">Lampa Sofa</div>
-            </a>
-
-            <a href="intent:#Intent;launchFlags=0x10000000;component=com.hunterindustries.hydrawise/.MainActivity;end" class="tile">
-                <svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0zM12 20a6 6 0 0 0 6-6c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3zm0-11.83L14.83 11H9.17z"/></svg>
-                <div class="tile-title">Hydrawise</div>
-            </a>
-
-            <a href="javascript:void(0)" onclick="openApp('pl.codeandpepper.ecoharmonogram')" class="tile eco">
-                <svg viewBox="0 0 24 24"><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
-                <div class="tile-title">Śmieci</div>
-            </a>
-
-            <a href="javascript:void(0)" onclick="openApp('pl.satel.integractrl')" class="tile alarm">
-                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                <div class="tile-title">Alarm</div>
-            </a>
-
-            <a href="intent:#Intent;launchFlags=0x10000000;component=com.spotify.music/.MainActivity;end" class="tile">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.58 14.42c-.18.29-.56.38-.85.2-2.34-1.43-5.29-1.75-8.76-.96-.33.07-.66-.14-.74-.47-.07-.33.14-.66.47-.74 3.79-.86 7.03-.5 9.68 1.12.29.18.38.56.2.85zm1.22-2.72c-.23.37-.71.49-1.08.26-2.68-1.65-6.77-2.13-9.94-1.17-.41.12-.84-.11-.96-.53-.12-.41.11-.84.53-.96 3.63-1.1 8.14-.57 11.19 1.3.37.23.49.71.26 1.08zm.1-2.84C14.63 8.87 9.24 8.69 6.13 9.64c-.5.15-1.02-.13-1.17-.63-.15-.5.13-1.02.63-1.17 3.58-1.09 9.53-.88 13.35 1.39.45.27.6.85.33 1.3-.27.45-.85.6-1.3.33z"/></svg>
-                <div class="tile-title">Spotify</div>
-            </a>
-
-            <a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.youtube/com.google.android.apps.youtube.app.watchwhile.WatchWhileActivity;end" class="tile">
-                <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                <div class="tile-title">YouTube</div>
-            </a>
+            <div class="tile" onclick="openApp('com.xiaomi.smarthome')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><div class="tile-title">Xiaomi Home</div></div>
+            <div class="tile" onclick="openApp('com.bshg.homeconnect.android')"><svg viewBox="0 0 24 24"><path d="M2 21h18v-2H2v2zM20 8h-2V5h2v3zm2-5H2v11c0 2.21 1.79 4 4 4h10c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 11c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V5h14v9z"/></svg><div class="tile-title">Ekspres</div></div>
+            <div class="tile" onclick="openApp('com.coolkit')"><svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.22 11.12l-.22.14V16h-4v-2.74l-.22-.14C8.67 12.32 8 10.74 8 9c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.74-.67 3.32-1.78 4.12z"/></svg><div class="tile-title">Lampa Sofa</div></div>
+            <div class="tile" onclick="openApp('com.hunterindustries.hydrawise')"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0zM12 20a6 6 0 0 0 6-6c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3zm0-11.83L14.83 11H9.17z"/></svg><div class="tile-title">Hydrawise</div></div>
+            <div class="tile" onclick="openApp('pl.codeandpepper.ecoharmonogram')"><svg viewBox="0 0 24 24"><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg><div class="tile-title">Śmieci</div></div>
+            <div class="tile" onclick="openApp('pl.satel.integractrl')"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg><div class="tile-title">Alarm</div></div>
+            <div class="tile" onclick="openApp('com.spotify.music')"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.58 14.42c-.18.29-.56.38-.85.2-2.34-1.43-5.29-1.75-8.76-.96-.33.07-.66-.14-.74-.47-.07-.33.14-.66.47-.74 3.79-.86 7.03-.5 9.68 1.12.29.18.38.56.2.85zm1.22-2.72c-.23.37-.71.49-1.08.26-2.68-1.65-6.77-2.13-9.94-1.17-.41.12-.84-.11-.96-.53-.12-.41.11-.84.53-.96 3.63-1.1 8.14-.57 11.19 1.3.37.23.49.71.26 1.08zm.1-2.84C14.63 8.87 9.24 8.69 6.13 9.64c-.5.15-1.02-.13-1.17-.63-.15-.5.13-1.02.63-1.17 3.58-1.09 9.53-.88 13.35 1.39.45.27.6.85.33 1.3-.27.45-.85.6-1.3.33z"/></svg><div class="tile-title">Spotify</div></div>
+            <div class="tile" onclick="openApp('com.google.android.youtube')"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><div class="tile-title">YouTube</div></div>
         </div>
     </div>
 
     <script>
-        // NOWA FUNKCJA DO URUCHAMIANIA APLIKACJI
         function openApp(pkg) {
             if (typeof fully !== 'undefined' && fully.startApplication) {
-                // Ta komenda omija blokady bezpieczeństwa przeglądarki i uruchamia aplikację bezpośrednio na tablecie
                 fully.startApplication(pkg);
             } else {
-                // Bezpieczny fallback, gdyby strona była otwarta poza trybem Kiosk
                 window.location.href = 'intent://#Intent;package=' + pkg + ';action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;end;';
             }
         }
-
-        // Reszta skryptów (Pogoda Open-Meteo, Zegar, Odświeżanie) pozostaje nienaruszona
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
-            
-            const options = { weekday: 'long', day: 'numeric', month: 'long' };
-            document.getElementById('date').textContent = now.toLocaleDateString('pl-PL', options);
+        function getDeclinedDayName(d) { return ["niedzielę", "poniedziałek", "wtorek", "środę", "czwartek", "piątek", "sobotę"][d]; }
+        function update() {
+            var n = new Date();
+            document.getElementById('clock').textContent = String(n.getHours()).padStart(2,'0') + ":" + String(n.getMinutes()).padStart(2,'0');
+            document.getElementById('date').textContent = n.toLocaleDateString('pl-PL', {weekday:'long', day:'numeric', month:'long'});
+            document.getElementById('agenda-day-name').textContent = "Plany na " + getDeclinedDayName(n.getDay());
         }
-
-        let lastWeatherUpdate = 0;
-
-        async function updateWeather() {
-            const now = Date.now();
-            if (now - lastWeatherUpdate < 120000) return; 
-
+        
+        // Pogoda - uproszczona, bezawaryjna
+        async function fetchWeather() {
             try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.35&longitude=20.91&current=temperature_2m,weather_code');
-                if (!res.ok) throw new Error(`Błąd HTTP: ${res.status}`);
-                
-                const data = await res.json();
-                const temp = Math.round(data.current.temperature_2m);
-                const code = data.current.weather_code;
-                
-                let desc = "Nieznana";
-                let mainWeather = "clear";
-                
-                if (code === 0) { desc = "Słonecznie"; mainWeather = "clear"; }
-                else if (code >= 1 && code <= 3) { desc = "Pochmurno"; mainWeather = "clouds"; }
-                else if (code === 45 || code === 48) { desc = "Mgła"; mainWeather = "clouds"; }
-                else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { desc = "Deszcz"; mainWeather = "rain"; }
-                else if (code >= 71 && code <= 77 || code >= 85) { desc = "Śnieg"; mainWeather = "snow"; } 
-                else if (code >= 95) { desc = "Burza"; mainWeather = "storm"; }
-
-                document.getElementById('local-temp').textContent = `${temp}°C`;
-                document.getElementById('local-desc').textContent = desc;
-                
-                const container = document.getElementById('weather-layer');
-                
-                if (mainWeather === 'rain') {
-                    container.innerHTML = '<div class="cloud" style="opacity:0.8; background:#64
+                const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.35&longitude=20.91&current=temperature_2m,weather_code');
+                const d = await r.json();
+                document.getElementById('local-temp').textContent = Math.round(d.current.temperature_2m) + "°C";
+                document.getElementById('local-desc').textContent = d.current.weather_code === 0 ? "Słonecznie" : "Zachmurzenie";
+                document.getElementById('weather-layer').innerHTML = d.current.weather_code === 0 ? '<div class="sun"></div>' : '<div class="cloud"></div>';
+            } catch(e) { document.getElementById('local-desc').textContent = "Łomianki"; }
+        }
+        
+        setInterval(update, 1000);
+        setInterval(fetchWeather, 600000);
+        update(); fetchWeather();
+    </script>
+</body>
+</html>
