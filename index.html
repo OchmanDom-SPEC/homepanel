@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Centrala Dom v5.0</title>
+    <title>Centrala Dom v5.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=100;300;400;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; overflow: hidden; padding: 40px; }
+        body { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; overflow: hidden; padding: 40px; height: 100vh; }
         
-        /* Układ asymetryczny: lewa strona stała, prawa wypełnia resztę */
-        .container { display: grid; grid-template-columns: 380px 1fr; gap: 24px; height: 100vh; max-height: calc(100vh - 80px); }
+        /* Główny kontener na pełną wysokość ekranu */
+        .container { display: grid; grid-template-columns: 380px 1fr; gap: 24px; height: calc(100vh - 80px); }
         
-        /* Lewa strona */
-        .info-panel { display: flex; flex-direction: column; justify-content: flex-start; gap: 20px; }
+        /* Lewa strona - Wyśrodkowana w pionie */
+        .info-panel { display: flex; flex-direction: column; justify-content: center; gap: 24px; height: 100%; }
+        
+        /* Zegar i data wyśrodkowane dla lepszego balansu wizualnego */
+        .clock-section { text-align: center; margin-bottom: 10px; }
         #clock { font-size: 110px; font-weight: 100; letter-spacing: -3px; line-height: 100px; color: #ffffff; }
-        #date { font-size: 24px; font-weight: 300; color: #888888; text-transform: capitalize; margin-top: -10px; }
+        #date { font-size: 24px; font-weight: 300; color: #888888; text-transform: capitalize; margin-top: 5px; }
         
         /* Interaktywny Pogoda-Boks Apple-Style */
         .weather-box { width: 100%; height: 110px; border-radius: 24px; background: linear-gradient(145deg, #18181c, #101012); border: 1px solid #232325; padding: 22px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #ffffff; transition: background 0.2s, border-color 0.2s; }
@@ -57,7 +60,7 @@
         @keyframes flash { 0%, 90%, 95%, 100% { opacity: 0; } 92%, 97% { opacity: 1; } }
 
         /* Przycisk Agendy */
-        .agenda-tile { width: 100%; height: 240px; border-radius: 24px; border: 1px solid #232325; background: linear-gradient(145deg, #141416, #1c1c1f); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: #ffffff; }
+        .agenda-tile { width: 100%; height: 220px; border-radius: 24px; border: 1px solid #232325; background: linear-gradient(145deg, #141416, #1c1c1f); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: #ffffff; }
         .agenda-tile:active { background: #232325; border-color: #4dadf7; }
         .agenda-header { display: flex; align-items: center; justify-content: space-between; }
         .agenda-title { font-size: 14px; font-weight: 600; color: #4dadf7; text-transform: uppercase; letter-spacing: 2px; }
@@ -65,12 +68,12 @@
         .agenda-footer { font-size: 12px; color: #a1a1a5; display: flex; align-items: center; gap: 8px; }
         .agenda-footer svg { width: 14px; height: 14px; fill: #4dadf7; }
 
-        /* Prawa strona */
-        .grid-panel { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 120px; gap: 15px; overflow-y: auto; }
-        .tile { background: #141416; border: 1px solid #232325; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; transition: background 0.2s; }
+        /* Prawa strona - Rozciągnięta w pionie (4 równe wiersze wypełniające 100% wysokości) */
+        .grid-panel { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, 1fr); gap: 16px; height: 100%; }
+        .tile { background: #141416; border: 1px solid #232325; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; transition: background 0.2s; height: 100%; }
         .tile:active { background: #232325; }
-        .tile-title { font-size: 13px; font-weight: 400; color: #a1a1a5; margin-top: 10px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px; }
-        .tile svg { width: 32px; height: 32px; fill: #ffffff; opacity: 0.9; }
+        .tile-title { font-size: 13px; font-weight: 400; color: #a1a1a5; margin-top: 12px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px; }
+        .tile svg { width: 36px; height: 36px; fill: #ffffff; opacity: 0.9; }
         
         .tile.alarm { border: 1px solid #3a1616; background: #1a1010; }
         .tile.alarm .tile-title { color: #ff6b6b; }
@@ -85,16 +88,17 @@
 
     <div class="container">
         <div class="info-panel">
-            <div id="clock">00:00</div>
-            <div id="date">Ładowanie...</div>
+            <div class="clock-section">
+                <div id="clock">00:00</div>
+                <div id="date">Ładowanie...</div>
+            </div>
             
             <a href="intent:#Intent;action=android.intent.action.VIEW;data=https://www.google.com/search?q=pogoda+lomianki;target=com.google.android.googlequicksearchbox;end" class="weather-box">
                 <div class="weather-info">
                     <div class="weather-temp" id="local-temp">--°C</div>
                     <div class="weather-desc" id="local-desc">Aktualizacja...</div>
                 </div>
-                <div class="weather-anim" id="weather-layer">
-                    </div>
+                <div class="weather-anim" id="weather-layer"></div>
             </a>
 
             <a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.calendar/com.android.calendar.AllInOneActivity;end" class="agenda-tile">
