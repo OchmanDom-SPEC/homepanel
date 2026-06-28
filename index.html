@@ -1,98 +1,136 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Salon Centrala</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600&display=swap" rel="stylesheet">
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-body { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; overflow: hidden; padding: 40px; }
-.container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; height: 100vh; max-height: calc(100vh - 80px); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Centrala Dom v2.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; overflow: hidden; padding: 40px; }
+        .container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; height: 100vh; max-height: calc(100vh - 80px); }
+        
+        /* Lewa strona */
+        .info-panel { display: flex; flex-direction: column; justify-content: flex-start; gap: 25px; }
+        #clock { font-size: 110px; font-weight: 100; letter-spacing: -3px; line-height: 100px; color: #ffffff; }
+        #date { font-size: 24px; font-weight: 300; color: #888888; text-transform: capitalize; margin-top: -10px; }
+        
+        /* Nowy, bezpieczny widget pogodowy */
+        .weather-box { width: 100%; max-width: 400px; border-radius: 20px; background: #141416; border: 1px solid #232325; padding: 20px; display: flex; align-items: center; gap: 20px; }
+        .weather-temp { font-size: 48px; font-weight: 100; }
+        .weather-desc { font-size: 14px; color: #888888; text-transform: uppercase; letter-spacing: 1px; }
 
-/* Lewa strona: Info */
-.info-panel { display: flex; flex-direction: column; justify-content: flex-start; gap: 20px; }
-#clock { font-size: 110px; font-weight: 100; letter-spacing: -3px; line-height: 100px; color: #ffffff; }
-#date { font-size: 24px; font-weight: 300; color: #888888; margin-bottom: 20px; text-transform: capitalize; }
-.weather-widget { width: 100%; max-width: 400px; border-radius: 16px; background: #111111; padding: 20px; border: 1px solid #222222; }
+        .agenda-box { width: 100%; max-width: 400px; border-radius: 20px; background: #141416; border: 1px solid #232325; padding: 20px; text-decoration: none; color: #ffffff; display: block; }
+        .agenda-box:active { background: #232325; }
+        .agenda-title { font-size: 14px; font-weight: 600; color: #ff9f43; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; }
+        .event-name { font-size: 16px; color: #ffffff; font-weight: 400; }
 
-/* Prawa strona: Kafelki */
-.grid-panel { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: minmax(140px, auto); gap: 20px; }
-.tile { background: #141416; border: 1px solid #232325; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; transition: background 0.2s; cursor: pointer; }
-.tile:active { background: #232325; }
-.tile-title { font-size: 15px; font-weight: 400; color: #a1a1a5; margin-top: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
-.tile svg { width: 36px; height: 36px; fill: #ffffff; opacity: 0.9; }
-
-/* Czerwony akcent dla Alarmu */
-.tile.alarm { border-line: 1px solid #3a1616; background: #1a1010; }
-.tile.alarm:active { background: #2d1616; }
-.tile.alarm .tile-title { color: #ff6b6b; }
-.tile.alarm svg { fill: #ff6b6b; }
-</style>
+        /* Prawa strona - Siatka 2x4 */
+        .grid-panel { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 120px; gap: 15px; overflow-y: auto; }
+        .tile { background: #141416; border: 1px solid #232325; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; }
+        .tile:active { background: #232325; }
+        .tile-title { font-size: 13px; font-weight: 400; color: #a1a1a5; margin-top: 10px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px; }
+        .tile svg { width: 32px; height: 32px; fill: #ffffff; opacity: 0.9; }
+        
+        /* Akcenty kolorystyczne */
+        .tile.alarm { border: 1px solid #3a1616; background: #1a1010; }
+        .tile.alarm .tile-title { color: #ff6b6b; }
+        .tile.alarm svg { fill: #ff6b6b; }
+        
+        .tile.eco { border: 1px solid #1e3a1e; background: #101c10; }
+        .tile.eco .tile-title { color: #51cf66; }
+        .tile.eco svg { fill: #51cf66; }
+    </style>
 </head>
 <body>
 
-<div class="container">
-<!-- LEWA STRONA -->
-<div class="info-panel">
-<div id="clock">00:00</div>
-<div id="date">Poniedziałek, 1 stycznia</div>
+    <div class="container">
+        <!-- LEWA STRONA -->
+        <div class="info-panel">
+            <div id="clock">00:00</div>
+            <div id="date">Ładowanie...</div>
+            
+            <!-- Stabilna Pogoda -->
+            <div class="weather-box">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="#ff9f43"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zm0-10V3M12 21v-2M5.64 5.64l1.41 1.41M16.95 16.95l1.41 1.41M3 12h2M19 12h2M7.05 16.95l-1.41 1.41M18.36 5.64l-1.41 1.41"/></svg>
+                <div>
+                    <div class="weather-temp">24°C</div>
+                    <div class="weather-desc">Słonecznie • Dom</div>
+                </div>
+            </div>
 
-<!-- Elegancki zewnętrzny widget pogodowy bez reklam -->
-<div class="weather-widget">
-<a class="weatherwidget-io" href="https://forecast7.com/pl/52base2521og/poland/" data-label_1="DOM" data-label_2="POGODA" data-font="Helvetica" data-icons="Climacons" data-theme="pure" data-basecolor="#111111" data-accent="" data-textcolor="#ffffff" data-highcolor="#ff6b6b" data-lowcolor="#4dadf7" >DOM POGODA</a>
-<script>
-!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-</script>
-</div>
-</div>
+            <!-- Kalendarz -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.calendar/com.android.calendar.AllInOneActivity;end" class="agenda-box">
+                <div class="agenda-title">Agenda na dziś</div>
+                <div class="event-item">
+                    <div class="event-name">Kliknij, aby otworzyć Kalendarz</div>
+                </div>
+            </a>
+        </div>
 
-<!-- PRAWA STRONA -->
-<div class="grid-panel">
-<!-- ALARM SATEL -->
-<a href="intent:#Intent;launchFlags=0x10000000;component=pl.satel.integractrl/.MainActivity;end" class="tile alarm">
-<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-<div class="tile-title">Satel Alarm</div>
-</a>
+        <!-- PRAWA STRONA -->
+        <div class="grid-panel">
+            <!-- 1. Satel -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=pl.satel.integractrl/.MainActivity;end" class="tile alarm">
+                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                <div class="tile-title">Satel Alarm</div>
+            </a>
 
-<!-- NAWADNIANIE HYDRAWISE -->
-<a href="intent:#Intent;launchFlags=0x10000000;component=com.hunterindustries.hydrawise/.MainActivity;end" class="tile">
-<svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0zM12 20a6 6 0 0 0 6-6c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3zm0-11.83L14.83 11H9.17z"/></svg>
-<div class="tile-title">Hydrawise</div>
-</a>
+            <!-- 2. Hydrawise -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=com.hunterindustries.hydrawise/.MainActivity;end" class="tile">
+                <svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0zM12 20a6 6 0 0 0 6-6c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3zm0-11.83L14.83 11H9.17z"/></svg>
+                <div class="tile-title">Hydrawise</div>
+            </a>
 
-<!-- XIAOMI HOME -->
-<a href="intent:#Intent;launchFlags=0x10000000;component=com.xiaomi.smarthome/.activity.MainActivity;end" class="tile">
-<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-<div class="tile-title">Xiaomi Home</div>
-</a>
+            <!-- 3. Xiaomi Home -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=com.xiaomi.smarthome/.activity.MainActivity;end" class="tile">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                <div class="tile-title">Xiaomi Home</div>
+            </a>
 
-<!-- SPOTIFY -->
-<a href="intent:#Intent;launchFlags=0x10000000;component=com.spotify.music/.MainActivity;end" class="tile">
-<svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.565.387-.86.207-2.377-1.454-5.37-1.783-8.894-.982-.336.074-.67-.14-.744-.477-.074-.336.14-.67.477-.743 3.856-.88 7.15-.51 9.813 1.12.296.183.387.568.208.865zm1.224-2.724c-.226.367-.707.487-1.074.26-2.72-1.672-6.87-2.157-10.08-1.182-.413.125-.843-.105-.968-.517-.125-.412.105-.842.518-.968 3.67-1.114 8.24-.57 11.34 1.33.367.227.487.708.26 1.075zm.105-2.833C14.152 8.515 7.93 8.307 4.332 9.4c-.55.166-1.123-.153-1.29-.7-.166-.548.154-1.122.7-1.29 4.14-1.257 11.01-1.02 15.35 1.554.495.294.658.932.364 1.426-.293.493-.93.657-1.425.363z"/></svg>
-<div class="tile-title">Spotify</div>
-</a>
+            <!-- 4. EcoHarmonogram -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=pl.codeandpepper.ecoharmonogram/.MainActivity;end" class="tile eco">
+                <svg viewBox="0 0 24 24"><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
+                <div class="tile-title">Wywozy Śmieci</div>
+            </a>
 
-<!-- YOUTUBE -->
-<a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.youtube/com.google.android.apps.youtube.app.watchwhile.WatchWhileActivity;end" class="tile">
-<svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-<div class="tile-title">YouTube</div>
-</a>
-</div>
-</div>
+            <!-- 5. Sonoff -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=com.coolkit/.activity.MainActivity;end" class="tile">
+                <svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
+                <div class="tile-title">Gniazdko Sonoff</div>
+            </a>
 
-<script>
-function updateClock() {
-const now = new Date();
-const hours = String(now.getHours()).padStart(2, '0');
-const minutes = String(now.getMinutes()).padStart(2, '0');
-document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            <!-- 6. Siemens Coffee -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=com.bshg.homeconnect/.MainActivity;end" class="tile">
+                <svg viewBox="0 0 24 24"><path d="M2 21h18v-2H2v2zM20 8h-2V5h2v3zm2-5H2v11c0 2.21 1.79 4 4 4h10c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 11c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V5h14v9z"/></svg>
+                <div class="tile-title">Ekspres Siemens</div>
+            </a>
 
-const options = { weekday: 'long', day: 'numeric', month: 'long' };
-document.getElementById('date').textContent = now.toLocaleDateString('pl-PL', options);
-}
-setInterval(updateClock, 1000);
-updateClock();
-</script>
+            <!-- 7. Spotify -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=com.spotify.music/.MainActivity;end" class="tile">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.565.387-.86.207-2.377-1.454-5.37-1.783-8.894-.982-.336.074-.67-.14-.744-.477-.074-.336.14-.67.477-.743 3.856-.88 7.15-.51 9.813 1.12.296.183.387.568.208.865z"/></svg>
+                <div class="tile-title">Spotify</div>
+            </a>
+
+            <!-- 8. YouTube -->
+            <a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.youtube/com.google.android.apps.youtube.app.watchwhile.WatchWhileActivity;end" class="tile">
+                <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <div class="tile-title">YouTube</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            document.getElementById('date').textContent = now.toLocaleDateString('pl-PL', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 </body>
 </html>
