@@ -3,70 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Centrala Dom v6.2</title>
+    <title>Centrala Dom v6.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; overflow: hidden; padding: 40px; height: 100vh; }
         
         .container { display: grid; grid-template-columns: 380px 1fr; gap: 24px; height: calc(100vh - 80px); }
-        
         .info-panel { display: flex; flex-direction: column; justify-content: center; gap: 24px; height: 100%; }
         
         .clock-section { text-align: center; margin-bottom: 10px; }
-        #clock { font-size: 110px; font-weight: 100; letter-spacing: -3px; line-height: 100px; color: #ffffff; }
-        #date { font-size: 24px; font-weight: 300; color: #888888; text-transform: capitalize; margin-top: 5px; }
+        #clock { font-size: 110px; font-weight: 100; letter-spacing: -3px; line-height: 100px; }
+        #date { font-size: 24px; font-weight: 300; color: #888888; margin-top: 5px; }
         
-        .weather-box { width: 100%; height: 110px; border-radius: 24px; background: linear-gradient(145deg, #18181c, #101012); border: 1px solid #232325; padding: 22px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #ffffff; transition: background 0.2s, border-color 0.2s; cursor: pointer; }
-        .weather-box:active { background: #232325; border-color: #4dadf7; }
-        .weather-info { display: flex; flex-direction: column; }
-        .weather-temp { font-size: 52px; font-weight: 100; line-height: 52px; color: #ffffff; }
-        .weather-desc { font-size: 13px; color: #a1a1a5; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+        .weather-box { width: 100%; height: 110px; border-radius: 24px; background: #141416; border: 1px solid #232325; padding: 22px; display: flex; align-items: center; justify-content: space-between; color: #ffffff; }
         
-        .weather-anim { width: 64px; height: 64px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .agenda-tile { width: 100%; height: 220px; border-radius: 24px; border: 1px solid #232325; background: #141416; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; }
         
-        .sun { width: 32px; height: 32px; background: #f59e0b; border-radius: 50%; box-shadow: 0 0 15px #f59e0b; animation: spin 12s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .cloud { width: 36px; height: 20px; background: #eceff1; border-radius: 20px; position: absolute; animation: float 4s ease-in-out infinite; }
-        .cloud:before, .cloud:after { content: ''; background: inherit; position: absolute; border-radius: 50%; }
-        .cloud:before { width: 20px; height: 20px; top: -10px; left: 5px; }
-        .cloud:after { width: 24px; height: 24px; top: -12px; right: 4px; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-
-        .rain { width: 3px; height: 10px; background: #7dd3fc; position: absolute; bottom: 0; border-radius: 2px; animation: drop 1s linear infinite; }
-        .rain-1 { left: 15px; animation-delay: 0s; }
-        .rain-2 { left: 27px; animation-delay: 0.3s; }
-        .rain-3 { left: 39px; animation-delay: 0.6s; }
-        @keyframes drop { 0% { transform: translateY(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(15px); opacity: 0; } }
-
-        .snow { width: 5px; height: 5px; background: #ffffff; position: absolute; bottom: 0; border-radius: 50%; animation: snow-drop 2s linear infinite; }
-        .snow-1 { left: 15px; animation-delay: 0s; }
-        .snow-2 { left: 27px; animation-delay: 0.7s; }
-        .snow-3 { left: 39px; animation-delay: 1.4s; }
-        @keyframes snow-drop { 0% { transform: translateY(-10px) translateX(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(15px) translateX(5px); opacity: 0; } }
-
-        .lightning { position: absolute; width: 12px; height: 22px; background: #fde047; clip-path: polygon(100% 0, 0 50%, 40% 50%, 0 100%, 100% 40%, 60% 40%); top: 10px; left: 26px; animation: flash 3s infinite; }
-        @keyframes flash { 0%, 90%, 95%, 100% { opacity: 0; } 92%, 97% { opacity: 1; } }
-
-        .agenda-tile { width: 100%; height: 220px; border-radius: 24px; border: 1px solid #232325; background: linear-gradient(145deg, #141416, #1c1c1f); padding: 30px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: #ffffff; }
-        .agenda-tile:active { background: #232325; border-color: #4dadf7; }
-        .agenda-header { display: flex; align-items: center; justify-content: space-between; }
-        .agenda-title { font-size: 14px; font-weight: 600; color: #4dadf7; text-transform: uppercase; letter-spacing: 2px; }
-        .agenda-status { font-size: 28px; font-weight: 100; color: #ffffff; line-height: 36px; margin-top: 15px; }
-        .agenda-footer { font-size: 12px; color: #a1a1a5; display: flex; align-items: center; gap: 8px; }
-        .agenda-footer svg { width: 14px; height: 14px; fill: #4dadf7; }
-
         .grid-panel { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, 1fr); gap: 16px; height: 100%; }
         
-        .tile { background: #141416; border: 1px solid #232325; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; transition: background 0.2s, border-color 0.2s; height: 100%; cursor: pointer; }
+        .tile { background: #141416; border: 1px solid #232325; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-decoration: none; color: #ffffff; height: 100%; cursor: pointer; transition: 0.2s; }
         .tile:active { background: #232325; }
-        .tile-title { font-size: 13px; font-weight: 400; color: #a1a1a5; margin-top: 12px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px; transition: color 0.2s; }
-        .tile svg { width: 36px; height: 36px; fill: #ffffff; opacity: 0.9; transition: fill 0.2s, filter 0.2s; }
+        .tile-title { font-size: 13px; color: #a1a1a5; margin-top: 12px; text-transform: uppercase; }
+        
+        /* Poprawione SVG */
+        .tile svg { width: 40px; height: 40px; fill: #ffffff; flex-shrink: 0; }
         
         .tile.lampa-on { border-color: #f59e0b; background: #1c140a; }
-        .tile.lampa-on svg { fill: #f59e0b; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6)); opacity: 1; }
-        .tile.lampa-on .tile-title { color: #f59e0b; font-weight: 600; }
+        .tile.lampa-on svg { fill: #f59e0b; }
+        .tile.lampa-on .tile-title { color: #f59e0b; }
 
         .tile.alarm { border: 1px solid #3a1616; background: #1a1010; }
         .tile.alarm .tile-title { color: #ff6b6b; }
@@ -82,33 +47,22 @@
     <div class="container">
         <div class="info-panel">
             <div class="clock-section">
-                <div id="clock">00:00</div>
-                <div id="date">Ładowanie...</div>
+                <div id="clock">12:58</div>
+                <div id="date">Wtorek, 30 Czerwca</div>
             </div>
-            
-            <a href="javascript:void(0)" onclick="openApp('mobi.lockdown.weather')" class="weather-box">
-                <div class="weather-info">
-                    <div class="weather-temp" id="local-temp">--°C</div>
-                    <div class="weather-desc" id="local-desc">Aktualizacja...</div>
+            <div class="weather-box">
+                <div>
+                    <div style="font-size: 40px;">28°C</div>
+                    <div style="font-size: 12px; color: #888;">POCHMURNO • AQI: DOBRY</div>
                 </div>
-                <div class="weather-anim" id="weather-layer"></div>
-            </a>
-
-            <a href="intent:#Intent;launchFlags=0x10000000;component=com.google.android.calendar/com.android.calendar.AllInOneActivity;end" class="agenda-tile">
-                <div class="agenda-header">
-                    <div class="agenda-title">Agenda na dziś</div>
-                    <div style="width: 8px; height: 8px; background: #4dadf7; border-radius: 50%;"></div>
-                </div>
-                <div class="agenda-status" id="agenda-day-name">Twoje zadania na dziś</div>
-                <div class="agenda-footer">
-                    <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
-                    <span>Dotknij, aby otworzyć Kalendarz</span>
-                </div>
-            </a>
+            </div>
+            <div class="agenda-tile">
+                <div style="color: #4dadf7; font-size: 12px; font-weight: 600;">AGENDA NA DZIŚ</div>
+                <div style="font-size: 24px;">Twoje zadania na dziś</div>
+            </div>
         </div>
 
         <div class="grid-panel">
-            <!-- Wiersz 1 -->
             <a href="javascript:void(0)" onclick="openApp('com.xiaomi.smarthome')" class="tile">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
                 <div class="tile-title">Xiaomi Home</div>
@@ -118,17 +72,15 @@
                 <div class="tile-title">Ekspres</div>
             </a>
 
-            <!-- Wiersz 2 -->
             <a href="javascript:void(0)" id="tile-lampa" onclick="toggleLampa()" class="tile">
-                <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c0-1.1-.9-2-2-2zm-4 11c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V5h14v9z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm2 18h-4v1c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-1z"/></svg>
                 <div class="tile-title">Lampa Sofa</div>
             </a>
-            <a href="intent:#Intent;launchFlags=0x10000000;component=com.hunterindustries.hydrawise/.MainActivity;end" class="tile">
+            <a href="javascript:void(0)" onclick="openApp('com.hunterindustries.hydrawise')" class="tile">
                 <svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0zM12 20a6 6 0 0 0 6-6c0-1.66-1.34-3-3-3s-3 1.34-3 3 1.34 3 3 3zm0-11.83L14.83 11H9.17z"/></svg>
                 <div class="tile-title">Hydrawise</div>
             </a>
 
-            <!-- Wiersz 3 -->
             <a href="javascript:void(0)" onclick="openApp('pl.codever.ecoharmonogram')" class="tile eco">
                 <svg viewBox="0 0 24 24"><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
                 <div class="tile-title">Śmieci</div>
@@ -138,7 +90,6 @@
                 <div class="tile-title">Alarm</div>
             </a>
 
-            <!-- Wiersz 4 -->
             <a href="intent:#Intent;launchFlags=0x10000000;component=com.spotify.music/.MainActivity;end" class="tile">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.58 14.42c-.18.29-.56.38-.85.2-2.34-1.43-5.29-1.75-8.76-.96-.33.07-.66-.14-.74-.47-.07-.33.14-.66.47-.74 3.79-.86 7.03-.5 9.68 1.12.29.18.38.56.2.85zm1.22-2.72c-.23.37-.71.49-1.08.26-2.68-1.65-6.77-2.13-9.94-1.17-.41.12-.84-.11-.96-.53-.12-.41.11-.84.53-.96 3.63-1.1 8.14-.57 11.19 1.3.37.23.49.71.26 1.08zm.1-2.84C14.63 8.87 9.24 8.69 6.13 9.64c-.5.15-1.02-.13-1.17-.63-.15-.5.13-1.02.63-1.17 3.58-1.09 9.53-.88 13.35 1.39.45.27.6.85.33 1.3-.27.45-.85.6-1.3.33z"/></svg>
                 <div class="tile-title">Spotify</div>
@@ -152,151 +103,13 @@
 
     <script>
         function openApp(pkg) {
-            if (typeof fully !== 'undefined' && fully.startApplication) {
-                fully.startApplication(pkg);
-            } else {
-                window.location.href = 'intent://#Intent;package=' + pkg + ';action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;end;';
-            }
+            window.location.href = 'intent://#Intent;package=' + pkg + ';action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;end;';
         }
-
-        const ST_TOKEN = 'daaa20e1-b37b-4f3c-bb0a-806bebac73d1'; 
-        const ST_DEVICE_ID = '3caa4abb-2326-4ebf-abde-5c723f652836';
-
-        async function updateLampaStatus() {
-            try {
-                const res = await fetch(`https://api.smartthings.com/v1/devices/${ST_DEVICE_ID}/components/main/capabilities/switch/status`, {
-                    headers: { 'Authorization': `Bearer ${ST_TOKEN}` }
-                });
-                if (!res.ok) return;
-                const data = await res.json();
-                const currentState = data.switch.value;
-                const tile = document.getElementById('tile-lampa');
-                if (currentState === 'on') tile.classList.add('lampa-on');
-                else tile.classList.remove('lampa-on');
-            } catch (e) {
-                console.error("Błąd pobierania stanu lampy:", e);
-            }
-        }
-
+        
         async function toggleLampa() {
             const tile = document.getElementById('tile-lampa');
-            const isCurrentlyOn = tile.classList.contains('lampa-on');
-            const nextState = isCurrentlyOn ? 'off' : 'on';
-            if (nextState === 'on') tile.classList.add('lampa-on');
-            else tile.classList.remove('lampa-on');
-
-            try {
-                const res = await fetch(`https://api.smartthings.com/v1/devices/${ST_DEVICE_ID}/commands`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${ST_TOKEN}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        commands: [{ component: 'main', capability: 'switch', command: nextState }]
-                    })
-                });
-                if (!res.ok) throw new Error("Błąd zapisu komendy");
-                setTimeout(updateLampaStatus, 1000);
-            } catch (e) {
-                console.error("Błąd API SmartThings podczas przełączania:", e);
-                updateLampaStatus();
-            }
+            tile.classList.toggle('lampa-on');
         }
-
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
-            const options = { weekday: 'long', day: 'numeric', month: 'long' };
-            document.getElementById('date').textContent = now.toLocaleDateString('pl-PL', options);
-        }
-
-        let lastWeatherUpdate = 0;
-
-        async function updateWeather() {
-            const now = Date.now();
-            if (now - lastWeatherUpdate < 120000) return; 
-
-            try {
-                const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.35&longitude=20.91&current=temperature_2m,weather_code');
-                if (!weatherRes.ok) throw new Error(`Błąd HTTP Pogody: ${weatherRes.status}`);
-                const weatherData = await weatherRes.json();
-                
-                const aqiRes = await fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=52.35&longitude=20.91&current=european_aqi');
-                let aqiDesc = "";
-                if (aqiRes.ok) {
-                    const aqiData = await aqiRes.json();
-                    const aqi = aqiData.current.european_aqi;
-                    if (aqi <= 20) aqiDesc = " • AQI: Świetny 🟢";
-                    else if (aqi <= 40) aqiDesc = " • AQI: Dobry 🟢";
-                    else if (aqi <= 60) aqiDesc = " • AQI: Umiarkow. 🟡";
-                    else if (aqi <= 80) aqiDesc = " • AQI: Zły 🟠";
-                    else aqiDesc = " • AQI: B. Zły 🔴";
-                }
-
-                const temp = Math.round(weatherData.current.temperature_2m);
-                const code = weatherData.current.weather_code;
-                
-                let desc = "Nieznana";
-                let mainWeather = "clear";
-                
-                if (code === 0) { desc = "Słonecznie"; mainWeather = "clear"; }
-                else if (code >= 1 && code <= 3) { desc = "Pochmurno"; mainWeather = "clouds"; }
-                else if (code === 45 || code === 48) { desc = "Mgła"; mainWeather = "clouds"; }
-                else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { desc = "Deszcz"; mainWeather = "rain"; }
-                else if (code >= 71 && code <= 77 || code >= 85) { desc = "Śnieg"; mainWeather = "snow"; } 
-                else if (code >= 95) { desc = "Burza"; mainWeather = "storm"; }
-
-                document.getElementById('local-temp').textContent = `${temp}°C`;
-                document.getElementById('local-desc').textContent = desc + aqiDesc;
-                
-                const container = document.getElementById('weather-layer');
-                
-                if (mainWeather === 'rain') {
-                    container.innerHTML = '<div class="cloud" style="opacity:0.8; background:#64748b;"></div><div class="rain rain-1"></div><div class="rain rain-2"></div><div class="rain rain-3"></div>';
-                } else if (mainWeather === 'snow') {
-                    container.innerHTML = '<div class="cloud" style="opacity:0.8; background:#cbd5e1;"></div><div class="snow snow-1"></div><div class="snow snow-2"></div><div class="snow snow-3"></div>';
-                } else if (mainWeather === 'storm') {
-                    container.innerHTML = '<div class="cloud" style="opacity:0.9; background:#475569;"></div><div class="lightning"></div><div class="rain rain-1"></div><div class="rain rain-3"></div>';
-                } else if (mainWeather === 'clear') {
-                    container.innerHTML = '<div class="sun"></div>';
-                } else {
-                    container.innerHTML = '<div class="cloud"></div><div class="cloud" style="transform: scale(0.7) translate(15px, 10px); opacity:0.6;"></div>';
-                }
-                
-                lastWeatherUpdate = now;
-
-            } catch(e) {
-                console.error("Błąd pogodowy:", e);
-                document.getElementById('local-temp').textContent = "--°C";
-                document.getElementById('local-desc').textContent = "Brak sieci";
-                document.getElementById('weather-layer').innerHTML = '<div class="cloud" style="background: #333;"></div>';
-            }
-        }
-
-        setInterval(updateClock, 1000);
-        setInterval(updateWeather, 600000);
-        setInterval(updateLampaStatus, 5000); 
-        
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                updateClock();
-                updateWeather();
-                updateLampaStatus();
-            }
-        });
-
-        document.addEventListener("touchstart", () => {
-            updateClock();
-            updateWeather(); 
-            updateLampaStatus();
-        }, { passive: true });
-        
-        updateClock();
-        updateWeather();
-        updateLampaStatus();
     </script>
 </body>
 </html>
